@@ -1,0 +1,44 @@
+from flask import Flask, render_template, request
+from EmotionDetection.emotion_detection import emotion_detector
+
+#Initiate flask app
+
+app = Flask(__name__)
+
+@app.route('/emotionDetector')
+def sent_detector():
+    # receive the text to analyze
+    text_to_analyze = request.args.get('textToAnalyze')
+
+    #get emotions dictionary {emotion:score, ...} from package module
+    emotions = emotion_detector(text_to_analyze)
+
+    #extract dominant emotion
+    dominant_emotion = emotions['dominant_emotion']
+
+    # Format the individual emotion key-value pairs
+    formatted_response = (
+        f"'anger': {emotions['anger']}, "
+        f"'disgust': {emotions['disgust']}, "
+        f"'fear': {emotions['fear']}, "
+        f"'joy': {emotions['joy']} and "
+        f"'sadness': {emotions['sadness']}"
+    )
+    
+    # Return formatted text string expected by index.html / grader
+    return (
+        f"For the given statement, the system response is {formatted_response}. "
+        f"The dominant emotion is {dominant_emotion}."
+    )    
+
+@app.route('/')
+def render_index_page():
+    ''' This function initiates the rendering of the main application
+        page over the Flask channel
+    '''
+    return render_template('index.html')
+
+if __name__ == "__main__":
+    ''' This functions executes the flask app and deploys it on localhost:5000
+    '''
+    app.run(host="0.0.0.0", port=5000)
