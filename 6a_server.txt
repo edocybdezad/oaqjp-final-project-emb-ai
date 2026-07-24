@@ -13,9 +13,6 @@ def sent_detector():
     #get emotions dictionary {emotion:score, ...} from package module
     emotions = emotion_detector(text_to_analyze)
 
-    if emotions['dominant_emotion'] is None:
-        return "Invalid text! Please try again!"
-
     #extract dominant emotion
     dominant_emotion = emotions['dominant_emotion']
 
